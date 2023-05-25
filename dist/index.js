@@ -11415,7 +11415,7 @@ async function main() {
     }
 
     if(admins.length === 0) {
-        await sendComment(commentClient, org, repo, issueNumber,`@${actor} There are no admins for ${repo}`)
+        await sendComment(commentClient, org, repo, issueNumber,`@${actor} There are no admins for ${queryRepo}`)
         core.setFailed(`There are no admins for ${queryRepo}`)
     } else {
         let body = `Because the repository you are seeking access to is maintained by project members, the GitHub admin team is not able to assist with this request, as we do not fulfill administrative requests for repositories with active administrators. Please contact the following members for assistance with access to https://github.com/${org}/${queryRepo}:\n\n`
