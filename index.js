@@ -1,7 +1,7 @@
-const core = require('@actions/core')
-const {Octokit} = require("@octokit/rest")
-const {retry} = require("@octokit/plugin-retry")
-const {throttling} = require("@octokit/plugin-throttling")
+import core from '@actions/core'
+import {Octokit} from "@octokit/rest"
+import {retry} from "@octokit/plugin-retry"
+import {throttling} from "@octokit/plugin-throttling"
 
 const _Octokit = Octokit.plugin(retry, throttling)
 
@@ -66,7 +66,7 @@ async function getUsers(client, org) {
             if (user.name) {
                 results[user.login] = user.name
             } else {
-                results[user.login] = user.login
+                console.log(`Not returning a user with no name: ${user.login}`)
             }
         } else {
             results[user.login] = user.organizationVerifiedDomainEmails[0]
@@ -159,7 +159,7 @@ async function main() {
         await sendComment(commentClient, org, repo, issueNumber,`@${actor} There are no admins for ${queryRepo}`)
         core.setFailed(`There are no admins for ${queryRepo}`)
     } else {
-        let body = `Because the repository you are seeking access to is maintained by project members, the GitHub admin team is not able to assist with this request, as we do not fulfill administrative requests for repositories with active administrators. Please contact the following members for assistance with access to https://github.com/${org}/${queryRepo}:\n\n`
+        let body = `The following users have been identified as having \`administrator\` access to https://github.com/${org}/${queryRepo}:\n\n`
         for (const admin of admins) {
             body += `* ${users[admin]}\n`
         }
