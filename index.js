@@ -90,6 +90,7 @@ async function main() {
     const actor = core.getInput('actor', {required: true, trimWhitespace: true})
     const adminToken = core.getInput('admin_token', {required: true, trimWhitespace: true})
     const _body = core.getInput('body', {required: true, trimWhitespace: true}).trim().split(' ')
+    const closeIssue = core.getInput('close_issue', {required: true, trimWhitespace: true}) === 'true'
     const issueNumber = core.getInput('issue_number', {required: true, trimWhitespace: true})
     const org = core.getInput('org', {required: true, trimWhitespace: true})
     const repo = core.getInput('repo', {required: true, trimWhitespace: true})
@@ -164,6 +165,15 @@ async function main() {
             body += `* ${users[admin]}\n`
         }
         await sendComment(commentClient, org, repo, issueNumber, body)
+    }
+
+    if (closeIssue) {
+        await client.issues.update({
+            owner: org,
+            repo: repo,
+            issue_number: issueNumber,
+            state: 'closed'
+        })
     }
 }
 

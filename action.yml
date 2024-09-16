@@ -13,6 +13,10 @@ inputs:
     description: 'The body of the newly created comment'
     required: true
     default: ${{ github.event.comment.body }}
+  close_issue:
+    description: 'Whether to close the issue'
+    required: true
+    default: 'false'
   issue_number:
     description: 'The GitHub issue number'
     required: true
