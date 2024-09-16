@@ -66,7 +66,7 @@ async function getUsers(client, org) {
             if (user.name) {
                 results[user.login] = user.name
             } else {
-                delete results[user.login]
+                results[user.login] = user.login
             }
         } else {
             results[user.login] = user.organizationVerifiedDomainEmails[0]
@@ -162,7 +162,9 @@ async function main() {
     } else {
         let body = `The following users have been identified as having \`administrator\` access to https://github.com/${org}/${queryRepo}:\n\n`
         for (const admin of admins) {
-            body += `* ${users[admin]}\n`
+            if(users[admin].includes('@')) {
+                body += `* ${users[admin]}\n`
+            }
         }
         await sendComment(commentClient, org, repo, issueNumber, body)
     }
