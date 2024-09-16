@@ -66,7 +66,7 @@ async function getUsers(client, org) {
             if (user.name) {
                 results[user.login] = user.name
             } else {
-                console.log(`Not returning a user with no name: ${user.login}`)
+                delete results[user.login]
             }
         } else {
             results[user.login] = user.organizationVerifiedDomainEmails[0]
