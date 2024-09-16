@@ -171,7 +171,7 @@ async function main() {
     }
 
     if (closeIssue) {
-        await client.issues.update({
+        await commentClient.issues.update({
             owner: issueOrg,
             repo: repo,
             issue_number: issueNumber,
