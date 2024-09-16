@@ -61,6 +61,7 @@ async function getUsers(client, org) {
     }
 
     const results = {}
+    console.log(users)
     for (const user of users) {
         if (user.organizationVerifiedDomainEmails.length === 0) {
             if (user.name) {
