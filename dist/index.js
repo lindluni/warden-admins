@@ -8255,6 +8255,7 @@ async function main() {
     const _body = core.getInput('body', {required: true, trimWhitespace: true}).trim().split(' ')
     const closeIssue = core.getInput('close_issue', {required: true, trimWhitespace: true}) === 'true'
     const issueNumber = core.getInput('issue_number', {required: true, trimWhitespace: true})
+    const issueOrg = core.getInput('issue_org', {required: true, trimWhitespace: true})
     const org = core.getInput('org', {required: true, trimWhitespace: true})
     const repo = core.getInput('repo', {required: true, trimWhitespace: true})
     const githubToken = core.getInput('token', {required: true, trimWhitespace: true})
@@ -8267,7 +8268,7 @@ async function main() {
     try {
         users = await getUsers(client, org)
     } catch (e) {
-        await sendComment(commentClient, org, repo,issueNumber, `@${actor} There was an error retrieving the users for ${org}: ${e.message}`)
+        await sendComment(commentClient, issueOrg, repo,issueNumber, `@${actor} There was an error retrieving the users for ${org}: ${e.message}`)
         core.setFailed(e.message)
     }
 
@@ -8281,7 +8282,7 @@ async function main() {
             per_page: 100
         })
     } catch (e) {
-        await sendComment(commentClient, org, repo, issueNumber,`@${actor} There was an error retrieving the direct admins for ${repo}: ${e.message}`)
+        await sendComment(commentClient, issueOrg, repo, issueNumber,`@${actor} There was an error retrieving the direct admins for ${repo}: ${e.message}`)
         core.setFailed(e.message)
     }
 
@@ -8295,7 +8296,7 @@ async function main() {
             repo: queryRepo,
         })
     } catch (e) {
-        await sendComment(commentClient, org, repo, issueNumber,`@${actor} There was an error retrieving the teams for ${repo}: ${e.message}`)
+        await sendComment(commentClient, issueOrg, repo, issueNumber,`@${actor} There was an error retrieving the teams for ${repo}: ${e.message}`)
         core.setFailed(e.message)
     }
 
@@ -8314,13 +8315,13 @@ async function main() {
                 }
             }
         } catch (e) {
-            await sendComment(commentClient, org, repo, issueNumber,`@${actor} There was an error retrieving the members for ${team.name}: ${e.message}`)
+            await sendComment(commentClient, issueOrg, repo, issueNumber,`@${actor} There was an error retrieving the members for ${team.name}: ${e.message}`)
             core.setFailed(e.message)
         }
     }
 
     if(admins.length === 0) {
-        await sendComment(commentClient, org, repo, issueNumber,`@${actor} There are no admins for ${queryRepo}`)
+        await sendComment(commentClient, issueOrg, repo, issueNumber,`@${actor} There are no admins for ${queryRepo}`)
         core.setFailed(`There are no admins for ${queryRepo}`)
     } else {
         let body = `The following users have been identified as having \`administrator\` access to https://github.com/${org}/${queryRepo}:\n\n`
@@ -8329,12 +8330,12 @@ async function main() {
                 body += `* ${users[admin]}\n`
             }
         }
-        await sendComment(commentClient, org, repo, issueNumber, body)
+        await sendComment(commentClient, issueOrg, repo, issueNumber, body)
     }
 
     if (closeIssue) {
         await client.issues.update({
-            owner: org,
+            owner: issueOrg,
             repo: repo,
             issue_number: issueNumber,
             state: 'closed'

@@ -21,6 +21,10 @@ inputs:
     description: 'The GitHub issue number'
     required: true
     default: ${{ github.event.issue.number }}
+  issue_org:
+    description: 'The GitHub org containing the issue'
+    required: true
+    default: ${{ github.repository_owner }}
   org:
     description: 'The GitHub org containing the repo'
     required: true
